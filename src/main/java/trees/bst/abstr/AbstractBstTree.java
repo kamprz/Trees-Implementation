@@ -1,4 +1,4 @@
-package trees.bst;
+package trees.bst.abstr;
 
 import org.apache.log4j.Logger;
 import trees.iterator.TreeIteratorType;

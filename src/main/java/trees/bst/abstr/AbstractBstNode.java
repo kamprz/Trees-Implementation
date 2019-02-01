@@ -1,8 +1,8 @@
-package trees.bst;
+package trees.bst.abstr;
 
 import java.util.Objects;
 
-public class AbstractBstNode<T extends Comparable,N extends AbstractBstNode<T,N>> {
+public abstract class AbstractBstNode<T extends Comparable,N extends AbstractBstNode<T,N>> {
     private static int lastId = 0;
     private int id;
     private T value;

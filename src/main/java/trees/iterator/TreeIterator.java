@@ -1,7 +1,7 @@
 package trees.iterator;
 
 import org.apache.log4j.Logger;
-import trees.bst.AbstractBstNode;
+import trees.bst.abstr.AbstractBstNode;
 
 import java.util.Iterator;
 import java.util.LinkedList;

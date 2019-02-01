@@ -1,6 +1,6 @@
 package trees.bst.avl;
 
-import trees.bst.AbstractBstNode;
+import trees.bst.abstr.AbstractBstNode;
 
 public class AvlNode<T extends Comparable> extends AbstractBstNode<T,AvlNode<T>> {
     private int balanceFactor;
