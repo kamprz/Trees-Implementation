@@ -1,11 +1,11 @@
 package trees.bst.avl;
 
-import trees.bst.BstNode;
+import trees.bst.AbstractBstNode;
 
-public class AvlNode<T extends Comparable> extends BstNode {
+public class AvlNode<T extends Comparable> extends AbstractBstNode<T,AvlNode<T>> {
     private int balanceFactor;
 
-    public AvlNode(Comparable value) {
+    public AvlNode(T value) {
         super(value);
     }
 

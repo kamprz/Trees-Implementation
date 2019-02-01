@@ -2,20 +2,20 @@ package trees.bst;
 
 import java.util.Objects;
 
-public class BstNode<T extends Comparable> {
+public class AbstractBstNode<T extends Comparable,N extends AbstractBstNode<T,N>> {
     private static int lastId = 0;
     private int id;
     private T value;
-    private BstNode parent = null;
-    private BstNode leftChild = null;
-    private BstNode rightChild = null;
+    private N parent = null;
+    private N leftChild = null;
+    private N rightChild = null;
 
-    public BstNode(T value) {
+    public AbstractBstNode(T value) {
         this.id = ++lastId;
         this.value = value;
     }
 
-    public boolean isGreaterThan(BstNode n)
+    public boolean isGreaterThan(AbstractBstNode n)
     {
         return compareTo(n) > 0;
     }
@@ -48,26 +48,26 @@ public class BstNode<T extends Comparable> {
         return getValue().compareTo(getParent().getLeftChild().getValue()) == 0;
     }
 
-    public BstNode getOnlyChild(BstNode node)
+    public N getOnlyChild(N node)
     {
         return node.getLeftChild() == null ? node.getRightChild() : node.getLeftChild();
     }
 
-    public BstNode getConsequentNode()
+    public N getConsequentNode()
     {
         if(rightChild == null) return null;
         if(rightChild.hasLeftChild())
         {
-            BstNode currentIndicated = rightChild;
-            while(currentIndicated.leftChild != null) currentIndicated = currentIndicated.leftChild;
+            N currentIndicated = rightChild;
+            while(currentIndicated.getLeftChild() != null) currentIndicated = currentIndicated.getLeftChild();
             return currentIndicated;
         }
         else return rightChild;
     }
 
     private int compareTo(Object o) {
-        if(!(o instanceof BstNode)) throw new ClassCastException("Przekazano zla klase.");
-        BstNode n = (BstNode) o;
+        if(!(o instanceof AbstractBstNode)) throw new ClassCastException("Przekazano zla klase.");
+        AbstractBstNode n = (AbstractBstNode) o;
         return value.compareTo(n.getValue());
     }
 
@@ -77,7 +77,7 @@ public class BstNode<T extends Comparable> {
         String left = leftChild == null? "X" : leftChild.getValue()+"";
         String right = rightChild == null? "X" : rightChild.getValue()+"";
 
-        return "BstNode{" +
+        return "AbstractBstNode{" +
                 "value=" + value +
                 ", parent=" + par +
                 ", leftChild=" + left +
@@ -89,7 +89,7 @@ public class BstNode<T extends Comparable> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        BstNode<?> node = (BstNode<?>) o;
+        AbstractBstNode<T,N> node = (AbstractBstNode<T,N>) o;
         return id == node.id &&
                 Objects.equals(value, node.value);
     }
@@ -115,27 +115,27 @@ public class BstNode<T extends Comparable> {
         this.value = value;
     }
 
-    public BstNode getParent() {
+    public N getParent() {
         return parent;
     }
 
-    public void setParent(BstNode parent) {
+    public void setParent(N parent) {
         this.parent = parent;
     }
 
-    public BstNode getLeftChild() {
+    public N getLeftChild() {
         return leftChild;
     }
 
-    public void setLeftChild(BstNode leftChild) {
+    public void setLeftChild(N leftChild) {
         this.leftChild = leftChild;
     }
 
-    public BstNode getRightChild() {
+    public N getRightChild() {
         return rightChild;
     }
 
-    public void setRightChild(BstNode rightChild) {
+    public void setRightChild(N rightChild) {
         this.rightChild = rightChild;
     }
 }

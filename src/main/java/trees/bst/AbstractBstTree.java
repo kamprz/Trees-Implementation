@@ -6,15 +6,15 @@ import trees.iterator.TreeIterator;
 
 import java.util.Iterator;
 
-public class BstTree<T extends Comparable> implements Iterable{
-    private BstNode<T> root;
-    private final Logger logger = Logger.getLogger(BstTree.class);
+public abstract class AbstractBstTree<T extends Comparable,N extends AbstractBstNode<T,N>> implements Iterable{
+    private N root;
+    private final Logger logger = Logger.getLogger(AbstractBstTree.class);
     private TreeIteratorType iteratorType = TreeIteratorType.PREORDER;
 
-    public BstTree() {
+    public AbstractBstTree() {
     }
 
-    public BstTree(TreeIteratorType iteratorType) {
+    public AbstractBstTree(TreeIteratorType iteratorType) {
         this.iteratorType = iteratorType;
     }
 
@@ -23,19 +23,19 @@ public class BstTree<T extends Comparable> implements Iterable{
         return root == null;
     }
 
-    public void addNode(T value)
+
+    public void addNode(N node)
     {
-        BstNode node = new BstNode(value);
         if(root == null) root = node;
         else
         {
-            BstNode currentIndicated = root;
-            BstNode parent = null;
+            AbstractBstNode currentIndicated = root;
+            AbstractBstNode parent = null;
             boolean wentLeft = false;
             while(!foundPlaceForNode(currentIndicated))
             {
                 if(node.getValue().compareTo(currentIndicated.getValue()) == 0) {
-                    logger.debug("BstNode " + node + " already exists in a tree.");
+                    logger.debug("AbstractBstNode " + node + " already exists in a tree.");
                     return;
                 }
 
@@ -53,12 +53,12 @@ public class BstTree<T extends Comparable> implements Iterable{
             if(wentLeft) addNodeAsLeftChild(currentIndicated,parent);
             else addNodeAsRightChild(currentIndicated,parent);
         }
-        logger.debug("BstNode " + node + " added.");
+        logger.debug("AbstractBstNode " + node + " added.");
     }
 
     public boolean removeNode(T value)
     {
-        BstNode beingDeleted = findNode(value);
+        N beingDeleted = findNode(value);
         if(beingDeleted == null)
         {
             logger.debug("Cant delete element. It doesnt exist.");
@@ -86,15 +86,15 @@ public class BstTree<T extends Comparable> implements Iterable{
     }
 
 
-    public BstNode findNode(T value)
+    public N findNode(T value)
     {
-        BstNode<T> currentIndicated = root;
+        N currentIndicated = root;
         while(currentIndicated != null && currentIndicated.getValue().compareTo(value) != 0)
         {
             if(currentIndicated.getValue().compareTo(value) > 0) currentIndicated = currentIndicated.getLeftChild();
             else currentIndicated = currentIndicated.getRightChild();
         }
-        if(currentIndicated == null) logger.debug("BstNode with value=" + value +  " doesnt exist.");
+        if(currentIndicated == null) logger.debug("AbstractBstNode with value=" + value +  " doesnt exist.");
         else logger.debug("Found " + currentIndicated);
         return currentIndicated;
     }
@@ -112,7 +112,7 @@ public class BstTree<T extends Comparable> implements Iterable{
         }
     }
 
-    private int getSubTreeSize(BstNode n)
+    private int getSubTreeSize(AbstractBstNode n)
     {
         int result = 0;
         if(n != null){
@@ -123,24 +123,24 @@ public class BstTree<T extends Comparable> implements Iterable{
         return result;
     }
 
-    private boolean foundPlaceForNode(BstNode n) {
+    private boolean foundPlaceForNode(AbstractBstNode n) {
         return n == null;
     }
 
-    private void addNodeAsLeftChild(BstNode added, BstNode parent)
+    private void addNodeAsLeftChild(AbstractBstNode added, AbstractBstNode parent)
     {
         added.setParent(parent);
         parent.setLeftChild(added);
     }
 
-    private void addNodeAsRightChild(BstNode added, BstNode parent)
+    private void addNodeAsRightChild(AbstractBstNode added, AbstractBstNode parent)
     {
         added.setParent(parent);
         parent.setRightChild(added);
     }
 
-    private void removeLeaf(BstNode beingDeleted) {
-        BstNode parent = beingDeleted.getParent();
+    private void removeLeaf(AbstractBstNode beingDeleted) {
+        AbstractBstNode parent = beingDeleted.getParent();
         if(parent == null)  //deleting root
         {
             root = null;
@@ -151,9 +151,9 @@ public class BstTree<T extends Comparable> implements Iterable{
         }
     }
 
-    private void removeNodeWithOnlyChild(BstNode beingDeleted) {
-        BstNode parent = beingDeleted.getParent();
-        BstNode onlyChild = beingDeleted.getOnlyChild(beingDeleted);
+    private void removeNodeWithOnlyChild(AbstractBstNode beingDeleted) {
+        AbstractBstNode parent = beingDeleted.getParent();
+        AbstractBstNode onlyChild = beingDeleted.getOnlyChild(beingDeleted);
 
         if(beingDeleted.isLeftChildren()) parent.setLeftChild(onlyChild);
         else parent.setRightChild(onlyChild);
@@ -161,8 +161,8 @@ public class BstTree<T extends Comparable> implements Iterable{
         onlyChild.setParent(beingDeleted.getParent());
     }
 
-    private void removeNodeWith2Children(BstNode beingDeleted) {
-        BstNode consequentNode = beingDeleted.getConsequentNode();
+    private void removeNodeWith2Children(N beingDeleted) {
+        N consequentNode = beingDeleted.getConsequentNode();
         if(isConsequentNodeRightChildOfDeletedNode(beingDeleted,consequentNode))
         {
             connectConsequentWithDeletedParent(consequentNode,beingDeleted);
@@ -170,10 +170,10 @@ public class BstTree<T extends Comparable> implements Iterable{
         }
         else
         {
-            BstNode deletedParent = beingDeleted.getParent();
-            BstNode deletedRightChild = beingDeleted.getRightChild();
-            BstNode consequentParent = consequentNode.getParent();
-            BstNode consequentRightChild = consequentNode.getRightChild();
+            N deletedParent = beingDeleted.getParent();
+            N deletedRightChild = beingDeleted.getRightChild();
+            N consequentParent = consequentNode.getParent();
+            N consequentRightChild = consequentNode.getRightChild();
 
             consequentParent.setLeftChild(consequentRightChild);
             if(consequentRightChild != null) consequentRightChild.setParent(consequentParent);
@@ -197,9 +197,9 @@ public class BstTree<T extends Comparable> implements Iterable{
         }
     }
 
-    private void connectConsequentWithDeletedParent(BstNode consequent, BstNode beingDeleted)
+    private void connectConsequentWithDeletedParent(AbstractBstNode consequent, AbstractBstNode beingDeleted)
     {
-        BstNode deletedParent = beingDeleted.getParent();
+        AbstractBstNode deletedParent = beingDeleted.getParent();
         if(deletedParent != null){
             if(beingDeleted.isLeftChildren()) deletedParent.setLeftChild(consequent);
             else deletedParent.setRightChild(consequent);
@@ -207,19 +207,19 @@ public class BstTree<T extends Comparable> implements Iterable{
         consequent.setParent(deletedParent);
     }
 
-    private void setParentAndChild(BstNode parent, BstNode child, boolean isRightChild)
+    private void setParentAndChild(AbstractBstNode parent, AbstractBstNode child, boolean isRightChild)
     {
         if(isRightChild) parent.setRightChild(child);
         else parent.setLeftChild(child);
         child.setParent(parent);
     }
 
-    private boolean isConsequentNodeRightChildOfDeletedNode(BstNode node, BstNode consequentNode)
+    private boolean isConsequentNodeRightChildOfDeletedNode(AbstractBstNode node, AbstractBstNode consequentNode)
     {
         return consequentNode.equals(node.getRightChild());
     }
 
-    private boolean isNodeRoot(BstNode node)
+    private boolean isNodeRoot(AbstractBstNode node)
     {
         return node.equals(root);
     }

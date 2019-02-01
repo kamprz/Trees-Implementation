@@ -1,26 +1,27 @@
 package trees.iterator;
 
 import org.apache.log4j.Logger;
-import trees.bst.BstNode;
+import trees.bst.AbstractBstNode;
 
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class TreeIterator implements Iterator<BstNode<? extends Comparable>>
+
+public class TreeIterator implements Iterator<AbstractBstNode>
 {
     private static final Logger logger = Logger.getLogger(TreeIterator.class);
-    private List<BstNode<?>> iterable;
+    private List<AbstractBstNode> iterable;
     private TreeIteratorType iteratorType = TreeIteratorType.PREORDER;
-    private BstNode root;
+    private AbstractBstNode root;
     private int iteratorPointer = 0;
 
-    public TreeIterator(BstNode root) {
+    public TreeIterator(AbstractBstNode root) {
         this.root = root;
         getIterator();
     }
 
-    public TreeIterator(TreeIteratorType iteratorType, BstNode root) {
+    public TreeIterator(TreeIteratorType iteratorType, AbstractBstNode root) {
         this.iteratorType = iteratorType;
         this.root = root;
         getIterator();
@@ -36,26 +37,26 @@ public class TreeIterator implements Iterator<BstNode<? extends Comparable>>
         }
     }
 
-    private void getPreOrderIterable(BstNode n) {
+    private void getPreOrderIterable(AbstractBstNode n) {
         addNode(n);
         if(n.hasLeftChild()) getPreOrderIterable(n.getLeftChild());
         if(n.hasRightChild()) getPreOrderIterable(n.getRightChild());
     }
 
-    private void getInOrderIterable(BstNode n)
+    private void getInOrderIterable(AbstractBstNode n)
     {
         if(n.hasLeftChild()) getInOrderIterable(n.getLeftChild());
         addNode(n);
         if(n.hasRightChild()) getInOrderIterable(n.getRightChild());
     }
 
-    private void getPostOrderIterable(BstNode n) {
+    private void getPostOrderIterable(AbstractBstNode n) {
         if(n.hasLeftChild()) getPostOrderIterable(n.getLeftChild());
         if(n.hasRightChild()) getPostOrderIterable(n.getRightChild());
         addNode(n);
     }
 
-    private void addNode(BstNode n)
+    private void addNode(AbstractBstNode n)
     {
         //logger.debug("Adding " + n + " to iterator.");
         iterable.add(n);
@@ -74,7 +75,7 @@ public class TreeIterator implements Iterator<BstNode<? extends Comparable>>
     }
 
     @Override
-    public BstNode<? extends Comparable> next() {
+    public AbstractBstNode next() {
         return iterable.get(iteratorPointer++);
     }
 }
