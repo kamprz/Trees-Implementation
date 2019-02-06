@@ -1,6 +1,10 @@
-import org.apache.log4j.Logger;
+package trees;
+
+import org.junit.Before;
 import org.junit.Test;
 import trees.bst.bst.BstTree;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -8,16 +12,15 @@ public class BstTreeTest {
 
     private BstTree<Integer> tree;
 
-    public void addElements()
+    @Before
+    public void init()
     {
         tree = new BstTree<>();
-        tree.addValue(10);
-        tree.addValue(20);
-        tree.addValue(6);
-        tree.addValue(2);
-        tree.addValue(7);
-        tree.addValue(15);
-        tree.addValue(18);
+    }
+
+    public void addElements()
+    {
+        tree.addValues(Arrays.asList(10,20,6,2,7,15,18));
     }
 
     @Test
@@ -64,7 +67,6 @@ public class BstTreeTest {
     @Test
     public void removeRootWhichIsTheOnlyNode()
     {
-        tree = new BstTree<>();
         tree.addValue(10);
         tree.removeNode(10);
         assertTrue(tree.isEmpty());
@@ -95,5 +97,14 @@ public class BstTreeTest {
     {
         addElements();
         tree.removeNode(1000);
+    }
+
+    @Test
+    public void removeNodeWithOnlyChildAndBeingRoot()
+    {
+        tree.addValue(10);
+        tree.addValue(20);
+        tree.removeNode(10);
+        assertEquals(tree.getRoot(),tree.findNode(20));
     }
 }

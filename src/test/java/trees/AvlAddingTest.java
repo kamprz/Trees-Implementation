@@ -1,25 +1,34 @@
+package trees;
+
 import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import trees.bst.avl.AvlNode;
 import trees.bst.avl.AvlTree;
 
+import java.util.Arrays;
+
 import static org.junit.Assert.*;
 
-public class RotationTest
+public class AvlAddingTest
 {
     private AvlTree<Integer> tree;
+
+    @Before
+    public void init()
+    {
+        tree = new AvlTree<>();
+    }
 
     @After
     public void printTree()
     {
-
         tree.printTree();
     }
 
     @Test
     public void testRRRotationWithRoot()
     {
-        tree = new AvlTree<>();
         AvlNode<Integer> rotationNode = new AvlNode<>(20);
         tree.addValue(10);
         tree.addNode(rotationNode);
@@ -33,14 +42,8 @@ public class RotationTest
     @Test
     public void testRRRotationWithoutRoot()
     {
-        tree = new AvlTree<>();
-        AvlNode<Integer> rotationNode = new AvlNode<>(15);
-        tree.addValue(5);
-        tree.addValue(3);
-        tree.addValue(10);
-        tree.addValue(4);
-        tree.addNode(rotationNode);
-        tree.addValue(20);
+        tree.addValues(Arrays.asList(5,3,10,4,15,20));
+        AvlNode<Integer> rotationNode = tree.findNode(15);
 
         assertEquals(rotationNode.getLeftChild(),tree.findNode(10));
         assertEquals(rotationNode.getParent(), tree.getRoot());
@@ -50,7 +53,6 @@ public class RotationTest
     @Test
     public void testLLRotationWithRoot()
     {
-        tree = new AvlTree<>();
         AvlNode<Integer> rotationNode = new AvlNode<>(20);
         tree.addValue(30);
         tree.addNode(rotationNode);
@@ -64,15 +66,8 @@ public class RotationTest
     @Test
     public void testLLRotationWithoutRoot()
     {
-        tree = new AvlTree<>();
-        AvlNode<Integer> rotationNode = new AvlNode<>(15);
-        tree.addValue(50);
-        tree.addValue(25);
-        tree.addValue(100);
-        tree.addValue(200);
-        tree.addNode(rotationNode);
-        tree.addValue(5);
-
+        tree.addValues(Arrays.asList(50,25,100,200,15,5));
+        AvlNode rotationNode = tree.findNode(15);
         assertEquals(rotationNode.getRightChild(),tree.findNode(25));
         assertEquals(rotationNode.getParent(), tree.getRoot());
         assertEquals(tree.getRoot().getLeftChild(),rotationNode);
@@ -80,7 +75,6 @@ public class RotationTest
     @Test
     public void testLRRotationWithRoot()
     {
-        tree = new AvlTree<>();
         AvlNode<Integer> rotationNode = new AvlNode<>(8);
         tree.addValue(10);
         tree.addValue(5);
@@ -94,13 +88,8 @@ public class RotationTest
     @Test
     public void testLRRotationWithoutRoot()
     {
-        tree = new AvlTree<>();
-        AvlNode<Integer> rotationNode = new AvlNode<>(175);
-        tree.addValue(100);
-        tree.addValue(50);
-        tree.addValue(200);
-        tree.addValue(150);
-        tree.addNode(rotationNode);
+        tree.addValues(Arrays.asList(100,50,200,150,175));
+        AvlNode<Integer> rotationNode = tree.findNode(175);
 
         assertEquals(rotationNode.getLeftChild(),tree.findNode(150));
         assertEquals(rotationNode.getRightChild(),tree.findNode(200));
@@ -110,7 +99,6 @@ public class RotationTest
     @Test
     public void testRLRotationWithRoot()
     {
-        tree = new AvlTree<>();
         AvlNode<Integer> rotationNode = new AvlNode<>(20);
         tree.addValue(10);
         tree.addValue(30);
@@ -124,14 +112,9 @@ public class RotationTest
     @Test
     public void testRLRotationWithoutRoot()
     {
-        tree = new AvlTree<>();
-        AvlNode<Integer> rotationNode = new AvlNode<>(250);
-        tree.addValue(100);
-        tree.addValue(50);
-        tree.addValue(200);
-        tree.addValue(300);
-        tree.addNode(rotationNode);
-
+        tree.addValues(Arrays.asList(100,50,200,300,250));
+        AvlNode<Integer> rotationNode = tree.findNode(250);
+        
         assertEquals(rotationNode.getLeftChild(),tree.findNode(200));
         assertEquals(rotationNode.getRightChild(),tree.findNode(300));
         assertEquals(rotationNode.getParent(), tree.getRoot());
@@ -141,20 +124,7 @@ public class RotationTest
     @Test
     public void moreComplexAddingTest()
     {
-        tree = new AvlTree<>();
-        tree.addValue(20);
-        tree.addValue(10);
-        tree.addValue(25);
-        tree.addValue(2);
-        tree.addValue(15);
-        tree.addValue(22);
-        tree.addValue(50);
-        tree.addValue(18);
-        tree.addValue(30);
-        tree.addValue(100);
-        tree.addValue(35);
-        tree.addValue(150);
-
+        tree.addValues(Arrays.asList(20,10,25,2,15,22,50,18,30,100,35,150));
         assertEquals(5, tree.getRoot().getSubtreeHeight());
         assertEquals(tree.findNode(30), tree.findNode(50).getParent());
         assertEquals(tree.findNode(25), tree.findNode(30).getLeftChild());

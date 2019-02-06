@@ -1,7 +1,12 @@
+package trees;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import trees.bst.avl.AvlTree;
+
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -37,10 +42,8 @@ public class AvlDeletingTest {
     @Test
     public void removeWithLLRotation()
     {
-        tree.addValue(100);
-        tree.addValue(50);
-        tree.addValue(200);
-        tree.addValue(10);
+        List<Integer> values = Arrays.asList(100,50,200,10);
+        tree.addValues(values);
         tree.removeNode(200);
         assertEquals(tree.getRoot(), tree.findNode(50));
         assertEquals(2,tree.getTreeHeight());
@@ -49,10 +52,8 @@ public class AvlDeletingTest {
     @Test
     public void removeWithRRRotation()
     {
-        tree.addValue(100);
-        tree.addValue(10);
-        tree.addValue(200);
-        tree.addValue(300);
+        List<Integer> values = Arrays.asList(100,10,200,300);
+        tree.addValues(values);
         tree.removeNode(10);
         assertEquals(tree.getRoot(), tree.findNode(200));
         assertEquals(2,tree.getTreeHeight());
@@ -61,13 +62,8 @@ public class AvlDeletingTest {
     @Test
     public void removeWith2ChildrenAndRotationAfterRemovingRoot()
     {
-        tree.addValue(100);
-        tree.addValue(50);
-        tree.addValue(200);
-        tree.addValue(75);
-        tree.addValue(150);
-        tree.addValue(300);
-        tree.addValue(400);
+        List<Integer> values = Arrays.asList(100,50,200,75,150,300,400);
+        tree.addValues(values);
         tree.removeNode(100);
         assertEquals(tree.getRoot(),tree.findNode(150));
         assertEquals(tree.getRoot().getRightChild(), tree.findNode(300));
@@ -76,29 +72,8 @@ public class AvlDeletingTest {
     @Test
     public void removeRootWithTwoConsequentRotations()
     {
-        tree.addValue(50);
-        tree.addValue(100);
-        tree.addValue(25);
-        tree.addValue(15);
-        tree.addValue(40);
-        tree.addValue(70);
-        tree.addValue(110);
-        tree.addValue(10);
-        tree.addValue(20);
-        tree.addValue(30);
-        tree.addValue(45);
-        tree.addValue(60);
-        tree.addValue(75);
-        tree.addValue(105);
-        tree.addValue(120);
-        tree.addValue(5);
-        tree.addValue(12);
-        tree.addValue(47);
-        tree.addValue(80);
-        tree.addValue(107);
-        tree.addValue(115);
-        tree.addValue(130);
-        tree.addValue(140);
+        List<Integer> values = Arrays.asList(50,100,25,15,40,70,110,10,20,30,45,60,75,105,120,5,12,47,80,107,115,130,140);
+        tree.addValues(values);
         tree.removeNode(50);
 
         assertEquals(tree.getRoot(), tree.findNode(60));
@@ -111,39 +86,9 @@ public class AvlDeletingTest {
 
     @Test
     public void removeRootWithThreeConsequentRotations() {
-        tree.addValue(50);
-        tree.addValue(100);
-        tree.addValue(25);
-        tree.addValue(15);
-        tree.addValue(40);
-        tree.addValue(70);
-        tree.addValue(110);
-        tree.addValue(10);
-        tree.addValue(20);
-        tree.addValue(30);
-        tree.addValue(45);
-        tree.addValue(60);
-        tree.addValue(75);
-        tree.addValue(105);
-        tree.addValue(120);
-        tree.addValue(5);
-        tree.addValue(12);
-        tree.addValue(47);
-        tree.addValue(80);
-        tree.addValue(107);
-        tree.addValue(115);
-        tree.addValue(130);
-        tree.addValue(140);
-        tree.addValue(22);
-        tree.addValue(35);
-        tree.addValue(1);
-        tree.addValue(28);
-        tree.addValue(27);
-        tree.addValue(33);
-        tree.addValue(37);
-        tree.addValue(42);
-        tree.addValue(48);
-        tree.addValue(38);
+        List<Integer> values = Arrays.asList(50,100,25,15,40,70,110,10,20,30,45,60,75,
+                105,120, 5,12,47,80,107,115,130,140,22,35,1,28,27,33,37,42,48,38);
+        tree.addValues(values);
         tree.removeNode(50);
 
         assertEquals(tree.getRoot(), tree.findNode(40));

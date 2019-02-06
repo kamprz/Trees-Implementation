@@ -48,16 +48,14 @@ public abstract class AbstractBstNode<T extends Comparable,N extends AbstractBst
         return equals(getParent().getLeftChild());
     }
 
-    public void setLeftChildAndParent(N child, N parent)
-    {
-        if(parent != null) parent.setLeftChild(child);
-        if(child !=null) child.setParent(parent);
+    public void setLeftChild(N leftChild) {
+        this.leftChild = leftChild;
+        if(leftChild != null) leftChild.setParent((N)this);
     }
 
-    public void setRightChildAndParent(N child, N parent)
-    {
-        if(parent != null) parent.setRightChild(child);
-        if(child !=null) child.setParent(parent);
+    public void setRightChild(N rightChild) {
+        this.rightChild = rightChild;
+        if(rightChild != null) rightChild.setParent((N)this);
     }
 
     public N getOnlyChild(N node)
@@ -139,15 +137,7 @@ public abstract class AbstractBstNode<T extends Comparable,N extends AbstractBst
         return leftChild;
     }
 
-    public void setLeftChild(N leftChild) {
-        this.leftChild = leftChild;
-    }
-
     public N getRightChild() {
         return rightChild;
-    }
-
-    public void setRightChild(N rightChild) {
-        this.rightChild = rightChild;
     }
 }

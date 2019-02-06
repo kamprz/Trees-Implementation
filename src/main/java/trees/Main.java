@@ -42,6 +42,6 @@ public class Main {
         avlTree.addValue(55);
         avlTree.addValue(105);
         avlTree.addValue(60);
-        avlTree.printTree();
+        avlTree.printTreeBfs();
     }
 }

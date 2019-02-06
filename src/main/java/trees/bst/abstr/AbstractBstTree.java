@@ -5,25 +5,39 @@ import trees.iterator.TreeIteratorType;
 import trees.iterator.TreeIterator;
 
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 public abstract class AbstractBstTree<T extends Comparable,N extends AbstractBstNode<T,N>> implements Iterable{
     protected N root;
     private final Logger logger = Logger.getLogger(AbstractBstTree.class);
     private TreeIteratorType iteratorType = TreeIteratorType.INORDER;
 
-    public AbstractBstTree() {
-    }
+    public AbstractBstTree() { }
 
     public AbstractBstTree(TreeIteratorType iteratorType) {
         this.iteratorType = iteratorType;
+    }
+
+
+    public abstract void addValue(T value);
+
+    public void addValues(List<T> valuesList)
+    {
+        for(T value : valuesList) addValue(value);
+    }
+
+    @Override
+    public Iterator iterator() {
+        logger.debug("Getting iterable " + iteratorType.toString().toLowerCase());
+        return new TreeIterator(iteratorType,root);
     }
 
     public boolean isEmpty()
     {
         return root == null;
     }
-
-    public abstract void addValue(T value);
 
     public void addNode(N node)
     {
@@ -84,7 +98,6 @@ public abstract class AbstractBstTree<T extends Comparable,N extends AbstractBst
         }
     }
 
-
     public N findNode(T value)
     {
         N currentIndicated = root;
@@ -117,21 +130,36 @@ public abstract class AbstractBstTree<T extends Comparable,N extends AbstractBst
         }
     }
 
+    public void printTreeBfs()
+    {
+        System.out.println("Printing tree with breadth-first search:");
+        if(root != null)
+        {
+            Queue<N> queue = new LinkedList<>();
+            queue.add(root);
+            getNodeToBfsQueue(queue);
+        }
+        else System.out.println("Tree is empty.");
+    }
+
+    private void getNodeToBfsQueue(Queue<N> queue)
+    {
+        N node = queue.remove();
+        System.out.println(node);
+        if(node.hasLeftChild()) queue.add(node.getLeftChild());
+        if(node.hasRightChild()) queue.add(node.getRightChild());
+        if(!queue.isEmpty()) getNodeToBfsQueue(queue);
+    }
+
     public N getRoot()
     {
         return root;
     }
 
-    protected static void setLeftChildAndParent(AbstractBstNode child, AbstractBstNode parent)
+    protected void setRoot(N node)
     {
-        if(parent != null) parent.setLeftChild(child);
-        if(child !=null) child.setParent(parent);
-    }
-
-    protected static void setRightChildAndParent(AbstractBstNode child, AbstractBstNode parent)
-    {
-        if(parent != null) parent.setRightChild(child);
-        if(child !=null) child.setParent(parent);
+        if(node != null) node.setParent(null);
+        root = node;
     }
 
     private int getSubTreeSize(AbstractBstNode node)
@@ -173,26 +201,18 @@ public abstract class AbstractBstTree<T extends Comparable,N extends AbstractBst
     }
 
     private N removeLeaf(N beingDeleted) {
-        N parent = beingDeleted.getParent();
-        if(parent == null)  //deleting root
-        {
-            root = null;
-        }
+        if(isNodeRoot(beingDeleted)) root = null;
         else{
-            if(beingDeleted.isLeftChild()) parent.setLeftChild(null);
-            else parent.setRightChild(null);
+            N parent = beingDeleted.getParent();
+            replaceNodeOnSecondNodeAsItsParentChild(null,beingDeleted);
+            return parent;
         }
-        return parent;
+        return null;
     }
 
     private N removeNodeWithOnlyChild(N beingDeleted) {
-        N parent = beingDeleted.getParent();
         N onlyChild = beingDeleted.getOnlyChild(beingDeleted);
-
-        if(beingDeleted.isLeftChild()) parent.setLeftChild(onlyChild);
-        else parent.setRightChild(onlyChild);
-
-        onlyChild.setParent(beingDeleted.getParent());
+        replaceNodeOnSecondNodeAsItsParentChild(onlyChild,beingDeleted);
         return onlyChild;
     }
 
@@ -200,51 +220,35 @@ public abstract class AbstractBstTree<T extends Comparable,N extends AbstractBst
         N consequentNode = beingDeleted.getConsequentNode();
         if(isConsequentNodeRightChildOfDeletedNode(beingDeleted,consequentNode))
         {
-            connectConsequentWithDeletedParent(consequentNode,beingDeleted);
+            replaceNodeOnSecondNodeAsItsParentChild(consequentNode,beingDeleted);
             consequentNode.setLeftChild(beingDeleted.getLeftChild());
             return consequentNode;
         }
         else
         {
-            N deletedParent = beingDeleted.getParent();
             N deletedRightChild = beingDeleted.getRightChild();
             N consequentParent = consequentNode.getParent();
             N consequentRightChild = consequentNode.getRightChild();
 
-            setLeftChildAndParent(consequentRightChild,consequentParent);
-
-            consequentNode.setParent(deletedParent);
-            if(beingDeleted != root)
-            {
-                if(beingDeleted.isLeftChild()) deletedParent.setLeftChild(consequentNode);
-                else deletedParent.setRightChild(consequentNode);
-            }
-            else root = consequentNode;
-
-            setRightChildAndParent(deletedRightChild,consequentNode);
-
-            setLeftChildAndParent(consequentRightChild,consequentParent);
-
-            setLeftChildAndParent(beingDeleted.getLeftChild(),consequentNode);
+            if(isNodeRoot(beingDeleted)) setRoot(consequentNode);
+            else replaceNodeOnSecondNodeAsItsParentChild(consequentNode,beingDeleted);
+            consequentParent.setLeftChild(consequentRightChild);
+            consequentNode.setRightChild(deletedRightChild);
+            consequentParent.setLeftChild(consequentRightChild);
+            consequentNode.setLeftChild(beingDeleted.getLeftChild());
             return consequentParent;
         }
     }
 
-    private void connectConsequentWithDeletedParent(N consequent, N beingDeleted)
+    private void replaceNodeOnSecondNodeAsItsParentChild(N node, N secondNode)
     {
-        N deletedParent = beingDeleted.getParent();
-        if(deletedParent != null){
-            if(beingDeleted.isLeftChild()) deletedParent.setLeftChild(consequent);
-            else deletedParent.setRightChild(consequent);
+        if(!isNodeRoot(secondNode))
+        {
+            N secondParent = secondNode.getParent();
+            if(secondNode.isLeftChild()) secondParent.setLeftChild(node);
+            else secondParent.setRightChild(node);
         }
-        consequent.setParent(deletedParent);
-    }
-
-    private void setParentAndChild(N parent, N child, boolean isRightChild)
-    {
-        if(isRightChild) parent.setRightChild(child);
-        else parent.setLeftChild(child);
-        child.setParent(parent);
+        else setRoot(node);
     }
 
     private boolean isConsequentNodeRightChildOfDeletedNode(AbstractBstNode node, AbstractBstNode consequentNode)
@@ -252,14 +256,8 @@ public abstract class AbstractBstTree<T extends Comparable,N extends AbstractBst
         return consequentNode.equals(node.getRightChild());
     }
 
-    private boolean isNodeRoot(AbstractBstNode node)
+    private boolean isNodeRoot(N node)
     {
         return node.equals(root);
-    }
-
-    @Override
-    public Iterator iterator() {
-        logger.debug("Getting iterable " + iteratorType.toString().toLowerCase());
-        return new TreeIterator(iteratorType,root);
     }
 }

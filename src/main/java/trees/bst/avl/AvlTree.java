@@ -13,6 +13,10 @@ public class AvlTree<T extends Comparable> extends AbstractBstTree<T,AvlNode<T>>
         super(iteratorType);
     }
 
+    public AvlTree() {
+
+    }
+
     @Override
     public void addValue(T value) {
         addNode(new AvlNode<>(value));
@@ -22,14 +26,20 @@ public class AvlTree<T extends Comparable> extends AbstractBstTree<T,AvlNode<T>>
     public void addNode(AvlNode<T> node)
     {
         super.addNode(node);
-        if(!node.equals(root))
-        {
-            balance(node);
-        }
+        balance(node);
     }
 
-    public AvlTree() {
-
+    @Override
+    public AvlNode<T> removeNode(T value)
+    {
+        AvlNode<T> nodeOverDeleted = super.removeNode(value);
+        if(valueExistedInTreeAndTreeIsNotEmpty(nodeOverDeleted))
+        {
+            setSubtreeBalanceFactors(nodeOverDeleted);
+            performRotationIfNeeded(nodeOverDeleted);
+            balance(nodeOverDeleted.getParent());
+        }
+        return null;
     }
 
     @Override
@@ -66,7 +76,7 @@ public class AvlTree<T extends Comparable> extends AbstractBstTree<T,AvlNode<T>>
     }
 
     //param node is going up during rotation
-    public void rotate(AvlNode<T> node)
+    private void rotate(AvlNode<T> node)
     {
         AvlNode<T> parent = node.getParent();
         AvlNode<T> grandpa = parent.getParent();
@@ -95,29 +105,12 @@ public class AvlTree<T extends Comparable> extends AbstractBstTree<T,AvlNode<T>>
         logger.debug("Rotate R " + child.getValue() + " over " + parent.getValue());
         AvlNode<T> childLeft = child.getLeftChild();
         AvlNode<T> grandpa = parent.getParent();
-        boolean isParentGrandpasLeftChild = false;
-        if(grandpa!= null) isParentGrandpasLeftChild = parent.isLeftChild();
+        boolean wasParentGrandpasLeftChild = false;
+        if(grandpa!= null) wasParentGrandpasLeftChild = parent.isLeftChild();
 
-        int childLeftSubtreeHeight = childLeft == null ? 0 : childLeft.getSubtreeHeight();
-        parent.setRightChild(childLeft);
-        parent.setRightSubtreeHeight(childLeftSubtreeHeight);
-        if(childLeft != null) childLeft.setParent(parent);
-
-        child.setLeftChild(parent);
-        child.setLeftSubtreeHeight(parent.getSubtreeHeight());
-        parent.setParent(child);
-
-        if(grandpa != null) {
-            if (isParentGrandpasLeftChild) {
-                grandpa.setLeftChild(child);
-                grandpa.setLeftSubtreeHeight(child.getSubtreeHeight());
-            } else {
-                grandpa.setRightChild(child);
-                grandpa.setRightSubtreeHeight(child.getSubtreeHeight());
-            }
-        }
-        else root = child;
-        child.setParent(grandpa);
+        setNodeParentLink(childLeft,parent,false);
+        setNodeParentLink(parent,child,true);
+        setNodeParentLink(child,grandpa,wasParentGrandpasLeftChild);
 
         logger.debug("After R rotation: ");
         printTree();
@@ -128,33 +121,12 @@ public class AvlTree<T extends Comparable> extends AbstractBstTree<T,AvlNode<T>>
         logger.debug("Rotate L " + child.getValue() + " over " + parent.getValue());
         AvlNode<T> childRight = child.getRightChild();
         AvlNode<T> grandpa = parent.getParent();
-        boolean isParentGrandpasLeftChild = false;
-        if(grandpa!= null) isParentGrandpasLeftChild = parent.isLeftChild();
+        boolean wasParentGrandpasLeftChild = false;
+        if(grandpa!= null) wasParentGrandpasLeftChild = parent.isLeftChild();
 
-        int childRightSubtreeHight = childRight == null ? 0 : childRight.getSubtreeHeight();
-        parent.setLeftChild(childRight);
-        parent.setLeftSubtreeHeight(childRightSubtreeHight);
-        if(childRight != null) childRight.setParent(parent);
-
-        child.setRightChild(parent);
-        child.setRightSubtreeHeight(parent.getSubtreeHeight());
-        parent.setParent(child);
-
-        if(grandpa != null) {
-            if(isParentGrandpasLeftChild) {
-                grandpa.setLeftChild(child);
-                grandpa.setLeftSubtreeHeight(child.getSubtreeHeight());
-            }
-            else {
-                grandpa.setRightChild(child);
-                grandpa.setRightSubtreeHeight(child.getSubtreeHeight());
-            }
-        }
-        else {
-            logger.debug("Changing root from " + root + " to " + child);
-            root = child;
-        }
-        child.setParent(grandpa);
+        setNodeParentLink(childRight,parent,true);
+        setNodeParentLink(parent,child,false);
+        setNodeParentLink(child,grandpa,wasParentGrandpasLeftChild);
 
         logger.debug("After L rotation: ");
         printTree();
@@ -172,16 +144,28 @@ public class AvlTree<T extends Comparable> extends AbstractBstTree<T,AvlNode<T>>
         rotationL(child,grandpa);
     }
 
-    public AvlNode<T> removeNode(T value)
+    private void setNodeParentLink(AvlNode<T> child, AvlNode<T> parent, boolean asLeftChild)
     {
-        AvlNode<T> nodeOverDeleted = super.removeNode(value);
-        if(nodeOverDeleted != null)
-        {
-            setSubtreeBalanceFactors(nodeOverDeleted);
-            performRotationIfNeeded(nodeOverDeleted);
-            balance(nodeOverDeleted.getParent());
+        if(parent != null) {
+            int childSubtreeHeight = child == null ? 0 : child.getSubtreeHeight();
+            if(asLeftChild) {
+                parent.setLeftChild(child);
+                parent.setLeftSubtreeHeight(childSubtreeHeight);
+            }
+            else {
+                parent.setRightChild(child);
+                parent.setRightSubtreeHeight(childSubtreeHeight);
+            }
         }
-        return null;
+        else {
+            logger.debug("Changing root from " + root + " to " + child);
+            setRoot(child);
+        }
+    }
+
+    private boolean valueExistedInTreeAndTreeIsNotEmpty(AvlNode<T> node)
+    {
+        return node != null;
     }
 
     private void setSubtreeBalanceFactors(AvlNode<T> node)

@@ -11,17 +11,7 @@ public class AvlNode<T extends Comparable> extends AbstractBstNode<T,AvlNode<T>>
         super(value);
     }
 
-    public boolean isLeftSubtreeHigherThanRight()
-    {
-        return leftSubtreeHeight > rightSubtreeHeight;
-    }
-
-    public boolean areSubtreesEquallyHigh()
-    {
-        return leftSubtreeHeight == rightSubtreeHeight;
-    }
-
-    public int getBalanceFactor() {
+    int getBalanceFactor() {
         return balanceFactor;
     }
 
@@ -30,37 +20,12 @@ public class AvlNode<T extends Comparable> extends AbstractBstNode<T,AvlNode<T>>
         if(leftSubtreeHeight > rightSubtreeHeight) return leftSubtreeHeight + 1;
         else return rightSubtreeHeight + 1;
     }
-
-    public void setBalanceFactor(int balanceFactor) {
-        this.balanceFactor = balanceFactor;
-    }
-
-    public void setLeftSubtreeHeight(int leftSubtreeHeight) {
+   void setLeftSubtreeHeight(int leftSubtreeHeight) {
         this.leftSubtreeHeight = leftSubtreeHeight;
         setBalanceFactor();
     }
-    public void setRightSubtreeHeight(int rightSubtreeHeight) {
+    void setRightSubtreeHeight(int rightSubtreeHeight) {
         this.rightSubtreeHeight = rightSubtreeHeight;
-        setBalanceFactor();
-    }
-
-    public void decrementLeftSubtree(){
-        leftSubtreeHeight--;
-        setBalanceFactor();
-    }
-
-    public void incrementLeftSubtree(){
-        leftSubtreeHeight++;
-        setBalanceFactor();
-    }
-
-    public void decrementRightSubtree(){
-        rightSubtreeHeight--;
-        setBalanceFactor();
-    }
-
-    public void incrementRightSubtree(){
-        rightSubtreeHeight++;
         setBalanceFactor();
     }
 
@@ -69,7 +34,7 @@ public class AvlNode<T extends Comparable> extends AbstractBstNode<T,AvlNode<T>>
         balanceFactor = getRightSubtreeHeight() - getLeftSubtreeHeight();
     }
 
-    public int getLeftSubtreeHeight() {
+    int getLeftSubtreeHeight() {
         return leftSubtreeHeight;
     }
 
