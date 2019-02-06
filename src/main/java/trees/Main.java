@@ -11,16 +11,37 @@ public class Main {
     public static void main(String[] args) {
         TreeIteratorType treeIteratorType = TreeIteratorType.INORDER;
         AvlTree<Integer> avlTree = new AvlTree(treeIteratorType);
-
-        avlTree.addNode(new AvlNode<>(10));
-        avlTree.addNode(new AvlNode<>(20));
+/*
+        avlTree.addValue(10);
+        avlTree.addValue(5);
+        avlTree.addValue(1);
+        avlTree.addValue(20);
+        avlTree.addValue(15);
+        avlTree.addValue(40);
+        avlTree.addValue(50);
+        avlTree.addValue(60);
         avlTree.printTree();
+        */
+/*
+        avlTree.addValue(20);
+        avlTree.addValue(10);
+        avlTree.addValue(25);
+        avlTree.addValue(2);
+        avlTree.addValue(15);
+        avlTree.addValue(22);
+        avlTree.addValue(50);
+        avlTree.addValue(18);
+        avlTree.addValue(30);
+        avlTree.addValue(100);
+        avlTree.addValue(35);
+        avlTree.addValue(150);*/
 
-        BstTree<Integer> bstTree = new BstTree<>(TreeIteratorType.POSTORDER);
-        bstTree.addNode(new BstNode<>(10));
-        bstTree.addNode(new BstNode<>(20));
-        bstTree.printTree();
-
-
+        avlTree.addValue(100);
+        avlTree.addValue(110);
+        avlTree.addValue(50);
+        avlTree.addValue(55);
+        avlTree.addValue(105);
+        avlTree.addValue(60);
+        avlTree.printTree();
     }
 }

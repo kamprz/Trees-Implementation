@@ -17,5 +17,8 @@ public class BstTree<T extends Comparable> extends AbstractBstTree<T, BstNode<T>
 
     }
 
-
+    @Override
+    public void addValue(T value) {
+        addNode(new BstNode<>(value));
+    }
 }

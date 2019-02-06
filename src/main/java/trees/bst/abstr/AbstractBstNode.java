@@ -43,9 +43,21 @@ public abstract class AbstractBstNode<T extends Comparable,N extends AbstractBst
         return getLeftChild() == null ^ getRightChild() == null;
     }
 
-    public boolean isLeftChildren()
+    public boolean isLeftChild()
     {
-        return getValue().compareTo(getParent().getLeftChild().getValue()) == 0;
+        return equals(getParent().getLeftChild());
+    }
+
+    public void setLeftChildAndParent(N child, N parent)
+    {
+        if(parent != null) parent.setLeftChild(child);
+        if(child !=null) child.setParent(parent);
+    }
+
+    public void setRightChildAndParent(N child, N parent)
+    {
+        if(parent != null) parent.setRightChild(child);
+        if(child !=null) child.setParent(parent);
     }
 
     public N getOnlyChild(N node)
@@ -65,7 +77,7 @@ public abstract class AbstractBstNode<T extends Comparable,N extends AbstractBst
         else return rightChild;
     }
 
-    private int compareTo(Object o) {
+    public int compareTo(Object o) {
         if(!(o instanceof AbstractBstNode)) throw new ClassCastException("Przekazano zla klase.");
         AbstractBstNode n = (AbstractBstNode) o;
         return value.compareTo(n.getValue());
@@ -77,7 +89,7 @@ public abstract class AbstractBstNode<T extends Comparable,N extends AbstractBst
         String left = leftChild == null? "X" : leftChild.getValue()+"";
         String right = rightChild == null? "X" : rightChild.getValue()+"";
 
-        return "AbstractBstNode{" +
+        return "Node{" +
                 "value=" + value +
                 ", parent=" + par +
                 ", leftChild=" + left +

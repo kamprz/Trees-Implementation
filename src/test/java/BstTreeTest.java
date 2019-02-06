@@ -1,11 +1,16 @@
+import org.apache.log4j.Logger;
+import org.junit.Test;
+import trees.bst.bst.BstTree;
+
+import static org.junit.Assert.*;
+
 public class BstTreeTest {
-    /*
-    private AbstractBstTree<Integer> tree;
-    private final Logger logger = Logger.getLogger(BstTreeTest.class);
+
+    private BstTree<Integer> tree;
 
     public void addElements()
     {
-        tree = new AbstractBstTree<>();
+        tree = new BstTree<>();
         tree.addValue(10);
         tree.addValue(20);
         tree.addValue(6);
@@ -18,7 +23,6 @@ public class BstTreeTest {
     @Test
     public void testFindingElements()
     {
-        logger.debug("Testing finding elements.");
         addElements();
         assertNotNull(tree.findNode(2));
         assertNotNull(tree.findNode(6));
@@ -33,7 +37,6 @@ public class BstTreeTest {
     @Test
     public void testAddingElements()
     {
-        logger.debug("Testing adding elements.");
         addElements();
         assertEquals(7, tree.getSize());
         assertEquals(6, tree.findNode(10).getLeftChild().getValue());
@@ -42,7 +45,6 @@ public class BstTreeTest {
     @Test
     public void testRemovingLeaf()
     {
-        logger.debug("Testing removing leaf.");
         addElements();
         tree.removeNode(2);
         assertEquals(6,tree.getSize());
@@ -53,7 +55,6 @@ public class BstTreeTest {
     @Test
     public void removingNodeWithOnlyChild()
     {
-        logger.debug("Testing removing node with only child.");
         addElements();
         tree.removeNode(20);
         assertNull(tree.findNode(20));
@@ -63,8 +64,7 @@ public class BstTreeTest {
     @Test
     public void removeRootWhichIsTheOnlyNode()
     {
-        logger.debug("Testing removing root being the only node.");
-        tree = new AbstractBstTree<>();
+        tree = new BstTree<>();
         tree.addValue(10);
         tree.removeNode(10);
         assertTrue(tree.isEmpty());
@@ -88,5 +88,12 @@ public class BstTreeTest {
         assertNull(tree.findNode(15).getParent()); //15 is root
         assertEquals(tree.findNode(15).getRightChild(), tree.findNode(20));
         assertEquals(tree.findNode(20).getLeftChild(), tree.findNode(18));
-    }*/
+    }
+
+    @Test
+    public void removeValueWhichIsNotInTree()
+    {
+        addElements();
+        tree.removeNode(1000);
+    }
 }

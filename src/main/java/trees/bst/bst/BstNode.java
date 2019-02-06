@@ -6,5 +6,4 @@ public class BstNode<T extends Comparable> extends AbstractBstNode<T, BstNode<T>
     public BstNode(T value) {
         super(value);
     }
-
 }
